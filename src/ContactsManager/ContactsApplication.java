@@ -79,7 +79,27 @@ public class ContactsApplication {
         }
 
         public static void deleteContact(){
-
+        Scanner scan = new Scanner(System.in);
+            System.out.println("Enter the first or last name of the contact you would like to delete:  ");
+            String nameToDelete = scan.nextLine();
+            Path contactsPath = Paths.get("data", "contacts.txt");
+            List<String> contactList;
+            try{
+                contactList = Files.readAllLines(contactsPath);
+                List<String> updatedList = new ArrayList<>();
+                for (String contact : contactList){
+                    if (contact.toLowerCase().contains(nameToDelete.toLowerCase())){
+                        continue;
+                    }
+                    updatedList.add(contact);
+                }
+                for (String name : updatedList){
+                    System.out.println(name);
+                }
+                Files.write(Paths.get("data", "contacts.txt"), updatedList);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
         }
 
 
@@ -98,6 +118,7 @@ public class ContactsApplication {
                     searchContacts();
                     break;
                 case 4:
+                    deleteContact();
                     break;
                 case 5:
                     System.out.println("Thank you for using C & C Contacts Factory!");
