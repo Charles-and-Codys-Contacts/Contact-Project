@@ -30,84 +30,92 @@ public class ContactsApplication {
         return userChoice;
     }
 
-        public static void addContact() throws IOException{
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Add a new contact to your list..."+
-                    "\nEnter the first name:  ");
-            String firstName = scanner.nextLine();
-            System.out.println("Enter the last name:  ");
-            String lastName = scanner.nextLine();
-            System.out.println("Enter the telephone number:  ");
-            String phoneNumber = scanner.nextLine();
+    public static void addContact() throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Add a new contact to your list..." +
+                "\nEnter the first name:  ");
+        String firstName = scanner.nextLine();
+        System.out.println("Enter the last name:  ");
+        String lastName = scanner.nextLine();
+        System.out.println("Enter the telephone number:  ");
+        String phoneNumber = scanner.nextLine();
 
-            Files.write(Paths.get("data", "contacts.txt"), Arrays.asList(firstName + " " + lastName + "|" + phoneNumber), StandardOpenOption.APPEND);
+        Files.write(Paths.get("data", "contacts.txt"), Arrays.asList(firstName + " " + lastName + " | " + phoneNumber + " "), StandardOpenOption.APPEND);
 
-            ContactList.add(new Contacts(firstName, lastName, phoneNumber));
-            System.out.println(firstName + " " + lastName + " was successfully added to your contacts list.");
+        ContactList.add(new Contacts(firstName, lastName, phoneNumber));
+        System.out.println(firstName + " " + lastName + " was successfully added to your contacts list.");
+
+    }
+
+
+
+    public static void showContactList() {
+        String leftAlignFormat = " %-20s | %-12s |%n";
+        System.out.printf(leftAlignFormat, "Name", " Phone Number ");
+        System.out.println(" ---------------------------------------");
+        Path contactsPath = Paths.get("data", "contacts.txt");
+        List<String> ContactList = null;
+        try {
+            ContactList = Files.readAllLines(contactsPath);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        for (int i = 0; i < ContactList.size(); i++) {
 
-        public static void showContactList(){
-            System.out.println("Name        | Phone Number    |");
-            Path contactsPath = Paths.get("data", "contacts.txt");
-            List<String> ContactList = null;
-            try{
-                ContactList = Files.readAllLines(contactsPath);
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-            for (int i = 0; i < ContactList.size(); i++){
-                System.out.println(ContactList.get(i));
-            }
+            String[] arr =  ContactList.get(i).split("\\|");
+
+            System.out.printf(leftAlignFormat, arr[0], arr[1]);
         }
+    }
 
-        public static void searchContacts(){
-            Scanner searcher = new Scanner(System.in);
-            System.out.println("Enter first or last name:  ");
-            String userSearch = searcher.nextLine();
-            Path contactsPath = Paths.get("data", "contacts.txt");
-            List<String> ContactList;
-            try{
-                ContactList = Files.readAllLines(contactsPath);
-                for (String contact : ContactList){
-                    if (contact.toLowerCase().contains(userSearch.toLowerCase())){
-                        System.out.println(contact);
-                    }
+    public static void searchContacts() {
+        Scanner searcher = new Scanner(System.in);
+        System.out.println("Enter first or last name:  ");
+        String userSearch = searcher.nextLine();
+        Path contactsPath = Paths.get("data", "contacts.txt");
+        List<String> ContactList;
+        try {
+            ContactList = Files.readAllLines(contactsPath);
+            for (String contact : ContactList) {
+                if (contact.toLowerCase().contains(userSearch.toLowerCase())) {
+                    System.out.println(contact);
                 }
-            }catch (IOException e){
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        public static void deleteContact(){
+    public static void deleteContact() {
         Scanner scan = new Scanner(System.in);
-            System.out.println("Enter the first or last name of the contact you would like to delete:  ");
-            String nameToDelete = scan.nextLine();
-            Path contactsPath = Paths.get("data", "contacts.txt");
-            List<String> contactList;
-            try{
-                contactList = Files.readAllLines(contactsPath);
-                List<String> updatedList = new ArrayList<>();
-                for (String contact : contactList){
-                    if (contact.toLowerCase().contains(nameToDelete.toLowerCase())){
-                        continue;
-                    }
-                    updatedList.add(contact);
+        System.out.println("Enter the first or last name of the contact you would like to delete:  ");
+        String nameToDelete = scan.nextLine();
+        Path contactsPath = Paths.get("data", "contacts.txt");
+        List<String> contactList;
+        try {
+            contactList = Files.readAllLines(contactsPath);
+            List<String> updatedList = new ArrayList<>();
+            for (String contact : contactList) {
+                if (contact.toLowerCase().contains(nameToDelete.toLowerCase())) {
+                    continue;
                 }
-                for (String name : updatedList){
-                    System.out.println(name);
-                }
-                Files.write(Paths.get("data", "contacts.txt"), updatedList);
-            }catch (IOException e){
-                e.printStackTrace();
+                updatedList.add(contact);
             }
+            for (String name : updatedList) {
+                System.out.println(name);
+            }
+            Files.write(Paths.get("data", "contacts.txt"), updatedList);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
 
-        while (true){
+        while (true) {
             int userChoice = mainMenu();
-            switch(userChoice){
+            switch (userChoice) {
                 case 1:
                     showContactList();
                     break;
@@ -131,5 +139,5 @@ public class ContactsApplication {
         }
     }
 
-    }
+}
 
