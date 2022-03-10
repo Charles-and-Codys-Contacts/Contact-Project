@@ -4,25 +4,20 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class ContactsApplication {
-    private static List<Contacts> ContactList = new ArrayList<>();
+    private static List<Contact> ContactList = new ArrayList<>();
 
     public static int mainMenu() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Welcome to C & C Contacts Factory\n\n");
-        System.out.println("Please select an option below: \n" + "------------------------------------ \n" + "1. View Contacts\n" + "2. Add a new contact\n" + "3. Search for a contact by name\n" + "4. Delete an existing contact\n" + "5. Exit\n" + "------------------------------------\n");
-        int userChoice = sc.nextInt();
-        return userChoice;
+        System.out.println("Please select an option below: \n------------------------------------ \n1. View Contacts\n2. Add a new contact\n3. Search for a contact by name\n4. Delete an existing contact\n5. Save contacts\n6. Exit\n------------------------------------\n");
+        return sc.nextInt();
     }
 
-    public static void addContact(ArrayList<Contacts> contactsList) throws IOException {
+    public static void addContact(ArrayList<Contact> contactsList) throws IOException {
         Scanner scanner = new Scanner(System.in);
         String firstName;
         String lastName;
@@ -30,26 +25,44 @@ public class ContactsApplication {
         do {
             System.out.println("Add a new contact to your list..." + "\nEnter first name: ");
             firstName = scanner.nextLine();
-        } while (firstName.contains("|"));
+            if(firstName.contains("|")) {
+                System.out.println("Names cannot have \"|\"s. Try again.");
+            } else {
+                break;
+            }
+        } while (true);
         do {
             System.out.println("Enter last name: ");
             lastName = scanner.nextLine();
-        } while (lastName.contains("|"));
+            if(lastName.contains("|")) {
+                System.out.println("Names cannot have \"|\"s. Try again.");
+            } else {
+                break;
+            }
+        } while (true);
         do {
-            System.out.println("Enter the telephone number:  ");
+            System.out.println("Enter the telephone number: ");
             phoneNumber = scanner.nextLine();
-        } while (phoneNumber.contains("|"));
+            if(phoneNumber.length() != 12) {
+                System.out.println("Phone numbers must have 10 digits. Format: [###-###-####]");
+            } else if(phoneNumber.contains("|")){
+                System.out.println("Phone numbers cannot have \"|\"s. Try again.");
+            } else {
+                break;
+            }
+        } while (true);
 //        Files.write(Paths.get("data", "contacts.txt"), Arrays.asList(firstName + " " + lastName + " | " + phoneNumber + " "), StandardOpenOption.APPEND);
 //        ContactList.add(new Contacts(firstName, lastName, phoneNumber));
-        contactsList.add(new Contacts(firstName, lastName, phoneNumber));
+        contactsList.add(new Contact(firstName, lastName, phoneNumber));
+        contactsList.sort(new ContactComparator());
         System.out.println(firstName + " " + lastName + " was successfully added to your contacts list.");
     }
 
-    public static void showContactList(ArrayList<Contacts> contactsList) {
+    public static void showContactList(ArrayList<Contact> contactsList) {
         String leftAlignFormat = " %-20s | %-12s |%n";
         System.out.printf(leftAlignFormat, "Name", "Phone Number");
         System.out.println(" -------------------------------------");
-        for (Contacts contact : contactsList) {
+        for (Contact contact : contactsList) {
             System.out.printf(leftAlignFormat, contact.getFirstName() + " " + contact.getLastName(), contact.getPhoneNumber());
         }
 //        Path contactsPath = Paths.get("data", "contacts.txt");
@@ -83,9 +96,9 @@ public class ContactsApplication {
         }
     }
 
-    public static void deleteContact() {
+    public static void deleteContact(ArrayList<Contact> contactsList) {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Enter the first or last name of the contact you would like to delete:  ");
+        System.out.println("Enter the first or last name of the contact you would like to delete: ");
         String nameToDelete = scan.nextLine();
         Path contactsPath = Paths.get("data", "contacts.txt");
         List<String> contactList;
@@ -107,6 +120,17 @@ public class ContactsApplication {
         }
     }
 
+    public static void saveContacts(Path contactsPath, ArrayList<Contact> contactsList) {
+        List<String> contactsStringList = new ArrayList<>();
+        for (Contact contact : contactsList) {
+            contactsStringList.add(contact.getFirstName() + " " + contact.getLastName() + "|" + contact.getPhoneNumber());
+        }
+        try {
+            Files.write(contactsPath, contactsStringList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         Path contactsPath = Paths.get("data", "contacts.txt");
@@ -116,11 +140,11 @@ public class ContactsApplication {
             Files.createFile(contactsPath);
         }
         List<String> contactsStringList = Files.readAllLines(contactsPath);
-        ArrayList<Contacts> contactsList = new ArrayList<>();
+        ArrayList<Contact> contactsList = new ArrayList<>();
         for (String contactString : contactsStringList) {
             String[] contactInfo = contactString.split("\\|");
             String[] contactName = contactInfo[0].split(" ");
-            contactsList.add(new Contacts(contactName[0], contactName[1], contactInfo[1]));
+            contactsList.add(new Contact(contactName[0], contactName[1], contactInfo[1]));
         }
         while (true) {
             int userChoice = mainMenu();
@@ -135,9 +159,13 @@ public class ContactsApplication {
                     searchContacts();
                     break;
                 case 4:
-                    deleteContact();
+                    deleteContact(contactsList);
                     break;
                 case 5:
+                    saveContacts(contactsPath, contactsList);
+                    break;
+                case 6:
+                    saveContacts(contactsPath, contactsList);
                     System.out.println("Thank you for using C & C Contacts Factory!");
                     System.exit(0);
                     break;
@@ -147,6 +175,4 @@ public class ContactsApplication {
             }
         }
     }
-
 }
-
