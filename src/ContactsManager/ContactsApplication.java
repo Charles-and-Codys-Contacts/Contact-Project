@@ -50,7 +50,9 @@ public class ContactsApplication {
 
 
     public static void showContactList() {
-        System.out.println("Name\t\t | Phone Number |");
+        String leftAlignFormat = " %-20s | %-12s |%n";
+        System.out.printf(leftAlignFormat, "Name", " Phone Number ");
+        System.out.println(" ---------------------------------------");
         Path contactsPath = Paths.get("data", "contacts.txt");
         List<String> ContactList = null;
         try {
@@ -62,7 +64,7 @@ public class ContactsApplication {
 
             String[] arr =  ContactList.get(i).split("\\|");
 
-            System.out.println(arr[0] + "|" + arr[1]);
+            System.out.printf(leftAlignFormat, arr[0], arr[1]);
         }
     }
 
