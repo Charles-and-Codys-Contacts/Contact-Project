@@ -8,12 +8,9 @@ import java.util.*;
 
 
 public class ContactsApplication {
-    private static List<Contact> ContactList = new ArrayList<>();
-
     public static int mainMenu() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Welcome to C & C Contacts Factory\n\n");
-        System.out.println("Please select an option below: \n------------------------------------ \n1. View Contacts\n2. Add a new contact\n3. Search for a contact by name\n4. Delete an existing contact\n5. Save contacts\n6. Exit\n------------------------------------\n");
+        System.out.print("\nWelcome to C & C Contacts Factory\n------------------------------------ \n1. View Contacts\n2. Add a new contact\n3. Search for a contact by name\n4. Delete an existing contact\n5. Save contacts\n6. Exit\n------------------------------------\nPlease select an option: ");
         return sc.nextInt();
     }
 
@@ -23,36 +20,34 @@ public class ContactsApplication {
         String lastName;
         String phoneNumber;
         do {
-            System.out.println("Add a new contact to your list..." + "\nEnter first name: ");
+            System.out.print("Add a new contact to your list...\nEnter first name: ");
             firstName = scanner.nextLine();
-            if(firstName.contains("|")) {
+            if (firstName.contains("|")) {
                 System.out.println("Names cannot have \"|\"s. Try again.");
             } else {
                 break;
             }
         } while (true);
         do {
-            System.out.println("Enter last name: ");
+            System.out.print("Enter last name: ");
             lastName = scanner.nextLine();
-            if(lastName.contains("|")) {
+            if (lastName.contains("|")) {
                 System.out.println("Names cannot have \"|\"s. Try again.");
             } else {
                 break;
             }
         } while (true);
         do {
-            System.out.println("Enter the telephone number: ");
+            System.out.print("Enter the telephone number: ");
             phoneNumber = scanner.nextLine();
-            if(phoneNumber.length() != 12) {
+            if (phoneNumber.length() != 12) {
                 System.out.println("Phone numbers must have 10 digits. Format: [###-###-####]");
-            } else if(phoneNumber.contains("|")){
+            } else if (phoneNumber.contains("|")) {
                 System.out.println("Phone numbers cannot have \"|\"s. Try again.");
             } else {
                 break;
             }
         } while (true);
-//        Files.write(Paths.get("data", "contacts.txt"), Arrays.asList(firstName + " " + lastName + " | " + phoneNumber + " "), StandardOpenOption.APPEND);
-//        ContactList.add(new Contacts(firstName, lastName, phoneNumber));
         contactsList.add(new Contact(firstName, lastName, phoneNumber));
         contactsList.sort(new ContactComparator());
         System.out.println(firstName + " " + lastName + " was successfully added to your contacts list.");
@@ -65,58 +60,36 @@ public class ContactsApplication {
         for (Contact contact : contactsList) {
             System.out.printf(leftAlignFormat, contact.getFirstName() + " " + contact.getLastName(), contact.getPhoneNumber());
         }
-//        Path contactsPath = Paths.get("data", "contacts.txt");
-//        List<String> ContactList = null;
-//        try {
-//            ContactList = Files.readAllLines(contactsPath);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        for (int i = 0; i < ContactList.size(); i++) {
-//            String[] arr = ContactList.get(i).split("\\|");
-//            System.out.printf(leftAlignFormat, arr[0], arr[1]);
-//        }
     }
 
-    public static void searchContacts() {
-        Scanner searcher = new Scanner(System.in);
-        System.out.println("Enter first or last name:  ");
-        String userSearch = searcher.nextLine();
-        Path contactsPath = Paths.get("data", "contacts.txt");
-        List<String> ContactList;
-        try {
-            ContactList = Files.readAllLines(contactsPath);
-            for (String contact : ContactList) {
-                if (contact.toLowerCase().contains(userSearch.toLowerCase())) {
-                    System.out.println(contact);
-                }
+    public static void searchContacts(ArrayList<Contact> contactsList) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter name or phone number: ");
+        String userSearch = scanner.nextLine().toLowerCase();
+        ArrayList<Contact> matchedContacts = new ArrayList<>();
+        for (Contact contact : contactsList) {
+            if (contact.getFirstName().toLowerCase().contains(userSearch) || contact.getLastName().toLowerCase().contains(userSearch) || contact.getPhoneNumber().contains(userSearch)) {
+                matchedContacts.add(contact);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        for (Contact contact : matchedContacts) {
+            System.out.printf("%s %s - %s\n", contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber());
         }
     }
 
     public static void deleteContact(ArrayList<Contact> contactsList) {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Enter the first or last name of the contact you would like to delete: ");
-        String nameToDelete = scan.nextLine();
-        Path contactsPath = Paths.get("data", "contacts.txt");
-        List<String> contactList;
-        try {
-            contactList = Files.readAllLines(contactsPath);
-            List<String> updatedList = new ArrayList<>();
-            for (String contact : contactList) {
-                if (contact.toLowerCase().contains(nameToDelete.toLowerCase())) {
-                    continue;
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter first or last name: ");
+        String userSearch = scanner.nextLine().toLowerCase();
+        for (Contact contact : contactsList) {
+            if (contact.getFirstName().toLowerCase().contains(userSearch) || contact.getLastName().toLowerCase().contains(userSearch)) {
+                System.out.printf("Delete %s %s? [y/N] ", contact.getFirstName(), contact.getLastName());
+                if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                    System.out.printf("%s %s deleted.", contact.getFirstName(), contact.getLastName());
+                    contactsList.remove(contact);
+                    break;
                 }
-                updatedList.add(contact);
             }
-            for (String name : updatedList) {
-                System.out.println(name);
-            }
-            Files.write(Paths.get("data", "contacts.txt"), updatedList);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -133,6 +106,7 @@ public class ContactsApplication {
     }
 
     public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
         Path contactsPath = Paths.get("data", "contacts.txt");
         if (Files.notExists(contactsPath)) {
             Path contactsDirectory = Paths.get("data");
@@ -149,29 +123,21 @@ public class ContactsApplication {
         while (true) {
             int userChoice = mainMenu();
             switch (userChoice) {
-                case 1:
-                    showContactList(contactsList);
-                    break;
-                case 2:
-                    addContact(contactsList);
-                    break;
-                case 3:
-                    searchContacts();
-                    break;
-                case 4:
-                    deleteContact(contactsList);
-                    break;
-                case 5:
-                    saveContacts(contactsPath, contactsList);
-                    break;
-                case 6:
-                    saveContacts(contactsPath, contactsList);
+                case 1 -> showContactList(contactsList);
+                case 2 -> addContact(contactsList);
+                case 3 -> searchContacts(contactsList);
+                case 4 -> deleteContact(contactsList);
+                case 5 -> saveContacts(contactsPath, contactsList);
+                case 6 -> {
+                    System.out.print("Save contacts? [y/N] ");
+                    if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                        saveContacts(contactsPath, contactsList);
+                        System.out.println("Contacts saved!");
+                    }
                     System.out.println("Thank you for using C & C Contacts Factory!");
                     System.exit(0);
-                    break;
-                default:
-                    System.out.println("Enter a choice 1 - 5, dummy");
-                    break;
+                }
+                default -> System.out.println("Enter a choice 1 - 5, dummy");
             }
         }
     }
