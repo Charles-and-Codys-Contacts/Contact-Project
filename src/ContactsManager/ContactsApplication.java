@@ -17,55 +17,52 @@ public class ContactsApplication {
     public static int mainMenu() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Welcome to C & C Contacts Factory\n\n");
-        System.out.println("Please select an option below: \n" +
-                "------------------------------------ \n" +
-                "1. View Contacts\n" +
-                "2. Add a new contact\n" +
-                "3. Search for a contact by name\n" +
-                "4. Delete an existing contact\n" +
-                "5. Exit\n" +
-                "------------------------------------\n");
-
+        System.out.println("Please select an option below: \n" + "------------------------------------ \n" + "1. View Contacts\n" + "2. Add a new contact\n" + "3. Search for a contact by name\n" + "4. Delete an existing contact\n" + "5. Exit\n" + "------------------------------------\n");
         int userChoice = sc.nextInt();
         return userChoice;
     }
 
-    public static void addContact() throws IOException {
+    public static void addContact(ArrayList<Contacts> contactsList) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Add a new contact to your list..." +
-                "\nEnter the first name:  ");
-        String firstName = scanner.nextLine();
-        System.out.println("Enter the last name:  ");
-        String lastName = scanner.nextLine();
-        System.out.println("Enter the telephone number:  ");
-        String phoneNumber = scanner.nextLine();
-
-        Files.write(Paths.get("data", "contacts.txt"), Arrays.asList(firstName + " " + lastName + " | " + phoneNumber + " "), StandardOpenOption.APPEND);
-
-        ContactList.add(new Contacts(firstName, lastName, phoneNumber));
+        String firstName;
+        String lastName;
+        String phoneNumber;
+        do {
+            System.out.println("Add a new contact to your list..." + "\nEnter first name: ");
+            firstName = scanner.nextLine();
+        } while (firstName.contains("|"));
+        do {
+            System.out.println("Enter last name: ");
+            lastName = scanner.nextLine();
+        } while (lastName.contains("|"));
+        do {
+            System.out.println("Enter the telephone number:  ");
+            phoneNumber = scanner.nextLine();
+        } while (phoneNumber.contains("|"));
+//        Files.write(Paths.get("data", "contacts.txt"), Arrays.asList(firstName + " " + lastName + " | " + phoneNumber + " "), StandardOpenOption.APPEND);
+//        ContactList.add(new Contacts(firstName, lastName, phoneNumber));
+        contactsList.add(new Contacts(firstName, lastName, phoneNumber));
         System.out.println(firstName + " " + lastName + " was successfully added to your contacts list.");
-
     }
 
-
-
-    public static void showContactList() {
+    public static void showContactList(ArrayList<Contacts> contactsList) {
         String leftAlignFormat = " %-20s | %-12s |%n";
-        System.out.printf(leftAlignFormat, "Name", " Phone Number ");
-        System.out.println(" ---------------------------------------");
-        Path contactsPath = Paths.get("data", "contacts.txt");
-        List<String> ContactList = null;
-        try {
-            ContactList = Files.readAllLines(contactsPath);
-        } catch (IOException e) {
-            e.printStackTrace();
+        System.out.printf(leftAlignFormat, "Name", "Phone Number");
+        System.out.println(" -------------------------------------");
+        for (Contacts contact : contactsList) {
+            System.out.printf(leftAlignFormat, contact.getFirstName() + " " + contact.getLastName(), contact.getPhoneNumber());
         }
-        for (int i = 0; i < ContactList.size(); i++) {
-
-            String[] arr =  ContactList.get(i).split("\\|");
-
-            System.out.printf(leftAlignFormat, arr[0], arr[1]);
-        }
+//        Path contactsPath = Paths.get("data", "contacts.txt");
+//        List<String> ContactList = null;
+//        try {
+//            ContactList = Files.readAllLines(contactsPath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        for (int i = 0; i < ContactList.size(); i++) {
+//            String[] arr = ContactList.get(i).split("\\|");
+//            System.out.printf(leftAlignFormat, arr[0], arr[1]);
+//        }
     }
 
     public static void searchContacts() {
@@ -112,15 +109,27 @@ public class ContactsApplication {
 
 
     public static void main(String[] args) throws IOException {
-
+        Path contactsPath = Paths.get("data", "contacts.txt");
+        if (Files.notExists(contactsPath)) {
+            Path contactsDirectory = Paths.get("data");
+            Files.createDirectories(contactsDirectory);
+            Files.createFile(contactsPath);
+        }
+        List<String> contactsStringList = Files.readAllLines(contactsPath);
+        ArrayList<Contacts> contactsList = new ArrayList<>();
+        for (String contactString : contactsStringList) {
+            String[] contactInfo = contactString.split("\\|");
+            String[] contactName = contactInfo[0].split(" ");
+            contactsList.add(new Contacts(contactName[0], contactName[1], contactInfo[1]));
+        }
         while (true) {
             int userChoice = mainMenu();
             switch (userChoice) {
                 case 1:
-                    showContactList();
+                    showContactList(contactsList);
                     break;
                 case 2:
-                    addContact();
+                    addContact(contactsList);
                     break;
                 case 3:
                     searchContacts();
