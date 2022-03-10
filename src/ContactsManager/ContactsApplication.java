@@ -123,12 +123,22 @@ public class ContactsApplication {
         while (true) {
             int userChoice = mainMenu();
             switch (userChoice) {
-                case 1 -> showContactList(contactsList);
-                case 2 -> addContact(contactsList);
-                case 3 -> searchContacts(contactsList);
-                case 4 -> deleteContact(contactsList);
-                case 5 -> saveContacts(contactsPath, contactsList);
-                case 6 -> {
+                case 1:
+                    showContactList(contactsList);
+                    break;
+                case 2:
+                    addContact(contactsList);
+                    break;
+                case 3:
+                    searchContacts(contactsList);
+                    break;
+                case 4:
+                    deleteContact(contactsList);
+                    break;
+                case 5:
+                    saveContacts(contactsPath, contactsList);
+                    break;
+                case 6:
                     System.out.print("Save contacts? [y/N] ");
                     if (scanner.nextLine().toLowerCase().startsWith("y")) {
                         saveContacts(contactsPath, contactsList);
@@ -136,8 +146,9 @@ public class ContactsApplication {
                     }
                     System.out.println("Thank you for using C & C Contacts Factory!");
                     System.exit(0);
-                }
-                default -> System.out.println("Enter a choice 1 - 5, dummy");
+                default:
+                    System.out.println("Enter a choice 1 - 5, dummy");
+                    break;
             }
         }
     }
