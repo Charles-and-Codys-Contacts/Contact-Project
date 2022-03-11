@@ -7,10 +7,10 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ContactsApplication {
-    public static int mainMenu() {
+    public static String mainMenu() {
         Scanner sc = new Scanner(System.in);
         System.out.print("\nWelcome to C & C Contacts Factory\n------------------------------------ \n1. View Contacts\n2. Add a new contact\n3. Search for a contact by name\n4. Edit a contact\n5. Delete an existing contact\n6. Save contacts\n7. Exit\n------------------------------------\nPlease select an option: ");
-        return sc.nextInt();
+        return sc.nextLine();
     }
 
     public static boolean invalidName(String name) {
@@ -296,27 +296,27 @@ public class ContactsApplication {
             contactsList.add(new Contact(contactName[0], contactName[1], contactInfo[1]));
         }
         while (true) {
-            int userChoice = mainMenu();
+            String userChoice = mainMenu();
             switch (userChoice) {
-                case 1:
+                case "1":
                     showContactList(contactsList);
                     break;
-                case 2:
+                case "2":
                     addContact(contactsList);
                     break;
-                case 3:
+                case "3":
                     searchContacts(contactsList);
                     break;
-                case 4:
+                case "4":
                     editContact(contactsList);
                     break;
-                case 5:
+                case "5":
                     deleteContact(contactsList);
                     break;
-                case 6:
+                case "6":
                     saveContacts(contactsPath, contactsList);
                     break;
-                case 7:
+                case "7":
                     System.out.print("Save contacts? [y/N] ");
                     if (scanner.nextLine().toLowerCase().startsWith("y")) {
                         saveContacts(contactsPath, contactsList);
@@ -325,7 +325,7 @@ public class ContactsApplication {
                     System.out.println("Thank you for using C & C Contacts Factory!");
                     System.exit(0);
                 default:
-                    System.out.println("Enter a choice 1 - 5, dummy");
+                    System.out.println("Enter a choice 1 - 7, dummy");
                     break;
             }
         }
