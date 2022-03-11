@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-
 public class ContactsApplication {
     public static int mainMenu() {
         Scanner sc = new Scanner(System.in);
@@ -14,16 +13,44 @@ public class ContactsApplication {
         return sc.nextInt();
     }
 
-    public static void addContact(ArrayList<Contact> contactsList) throws IOException {
+    public static boolean invalidName(String name) {
+        if (name.length() == 0) {
+            return true;
+        }
+        for (int i = 0; i < name.length(); i++) {
+            if (!Character.isLetter(name.charAt(i)) && name.charAt(i) != '-') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean invalidPhoneNumber(String phoneNumber) {
+        if (phoneNumber.length() == 0) {
+            return true;
+        }
+        if (!Character.isDigit(phoneNumber.charAt(0)) && phoneNumber.charAt(0) != '+' || phoneNumber.charAt(phoneNumber.length() - 1) == '-') {
+            return true;
+        }
+        for (int i = 1; i < phoneNumber.length(); i++) {
+            if (!Character.isDigit(phoneNumber.charAt(i)) && phoneNumber.charAt(i) != '-') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void addContact(ArrayList<Contact> contactsList) {
         Scanner scanner = new Scanner(System.in);
         String firstName;
         String lastName;
         String phoneNumber;
+        System.out.println("Add a new contact to your list...");
         do {
-            System.out.print("Add a new contact to your list...\nEnter first name: ");
+            System.out.print("Enter first name: ");
             firstName = scanner.nextLine();
-            if (firstName.contains("|")) {
-                System.out.println("Names cannot have \"|\"s. Try again.");
+            if (invalidName(firstName)) {
+                System.out.println("Names cannot contain numbers or special characters. Try again.");
             } else {
                 break;
             }
@@ -31,8 +58,8 @@ public class ContactsApplication {
         do {
             System.out.print("Enter last name: ");
             lastName = scanner.nextLine();
-            if (lastName.contains("|")) {
-                System.out.println("Names cannot have \"|\"s. Try again.");
+            if (invalidName(lastName)) {
+                System.out.println("Names cannot contain special characters or numbers. Try again.");
             } else {
                 break;
             }
@@ -51,8 +78,8 @@ public class ContactsApplication {
         do {
             System.out.print("Enter telephone number: ");
             phoneNumber = scanner.nextLine();
-            if (phoneNumber.contains("|")) {
-                System.out.println("Phone numbers cannot have \"|\"s. Try again.");
+            if (invalidPhoneNumber(phoneNumber)) {
+                System.out.println("Phone numbers cannot contain letters or special characters. Try again.");
             } else {
                 if (phoneNumber.length() == 10) {
                     String part1 = phoneNumber.substring(0, 3);
@@ -83,13 +110,25 @@ public class ContactsApplication {
 
     public static void searchContacts(ArrayList<Contact> contactsList) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter name or phone number: ");
-        String userSearch = scanner.nextLine().toLowerCase();
+        String userSearch;
+        while (true) {
+            System.out.print("Enter name or phone number: ");
+            userSearch = scanner.nextLine().toLowerCase();
+            if (userSearch.length() == 0) {
+                System.out.println("You didn't enter anything. Try again.");
+            } else {
+                break;
+            }
+        }
         ArrayList<Contact> matchedContacts = new ArrayList<>();
         for (Contact contact : contactsList) {
             if (contact.getFirstName().toLowerCase().contains(userSearch) || contact.getLastName().toLowerCase().contains(userSearch) || contact.getPhoneNumber().contains(userSearch)) {
                 matchedContacts.add(contact);
             }
+        }
+        if (matchedContacts.size() == 0) {
+            System.out.println("No results.");
+            return;
         }
         for (Contact contact : matchedContacts) {
             System.out.printf("%s %s - %s\n", contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber());
@@ -98,13 +137,25 @@ public class ContactsApplication {
 
     public static void editContact(ArrayList<Contact> contactsList) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter first or last name: ");
-        String userSearch = scanner.nextLine().toLowerCase();
+        String userSearch;
+        while (true) {
+            System.out.print("Enter first or last name: ");
+            userSearch = scanner.nextLine().toLowerCase();
+            if (userSearch.length() == 0) {
+                System.out.println("You didn't enter anything. Try again.");
+            } else {
+                break;
+            }
+        }
         ArrayList<Contact> matchedContacts = new ArrayList<>();
         for (Contact contact : contactsList) {
             if (contact.getFirstName().toLowerCase().contains(userSearch) || contact.getLastName().toLowerCase().contains(userSearch)) {
                 matchedContacts.add(contact);
             }
+        }
+        if (matchedContacts.size() == 0) {
+            System.out.println("No results.");
+            return;
         }
         while (true) {
             System.out.println("0. Cancel");
@@ -124,8 +175,8 @@ public class ContactsApplication {
                     do {
                         System.out.print("Enter first name: ");
                         firstName = scanner.nextLine();
-                        if (firstName.contains("|")) {
-                            System.out.println("Names cannot have \"|\"s. Try again.");
+                        if (invalidName(firstName)) {
+                            System.out.println("Names cannot contain numbers or special characters. Try again.");
                         } else {
                             break;
                         }
@@ -133,8 +184,8 @@ public class ContactsApplication {
                     do {
                         System.out.print("Enter last name: ");
                         lastName = scanner.nextLine();
-                        if (lastName.contains("|")) {
-                            System.out.println("Names cannot have \"|\"s. Try again.");
+                        if (invalidName(lastName)) {
+                            System.out.println("Names cannot contain special characters or numbers. Try again.");
                         } else {
                             break;
                         }
@@ -153,8 +204,8 @@ public class ContactsApplication {
                     do {
                         System.out.print("Enter telephone number: ");
                         phoneNumber = scanner.nextLine();
-                        if (phoneNumber.contains("|")) {
-                            System.out.println("Phone numbers cannot have \"|\"s. Try again.");
+                        if (invalidPhoneNumber(phoneNumber)) {
+                            System.out.println("Phone numbers cannot contain letters or special characters. Try again.");
                         } else {
                             if (phoneNumber.length() == 10) {
                                 String part1 = phoneNumber.substring(0, 3);
@@ -190,8 +241,16 @@ public class ContactsApplication {
 
     public static void deleteContact(ArrayList<Contact> contactsList) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter first or last name: ");
-        String userSearch = scanner.nextLine().toLowerCase();
+        String userSearch;
+        while (true) {
+            System.out.print("Enter first or last name: ");
+            userSearch = scanner.nextLine().toLowerCase();
+            if (userSearch.length() == 0) {
+                System.out.println("You didn't enter anything. Try again.");
+            } else {
+                break;
+            }
+        }
         for (Contact contact : contactsList) {
             if (contact.getFirstName().toLowerCase().contains(userSearch) || contact.getLastName().toLowerCase().contains(userSearch)) {
                 System.out.printf("Delete %s %s? [y/N] ", contact.getFirstName(), contact.getLastName());
