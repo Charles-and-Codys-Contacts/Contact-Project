@@ -1,15 +1,36 @@
 body{
     background-color: gray;
     color: white;
+    margin: 0;
+    padding: 0;
 }
 
 
 /*PERSON BOX*/
 #box{
+
+}
+.toggle1{
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    border: 5px solid #870160;
+    margin-left: 150px;
+    margin-right: 150px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.toggle2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border: 5px solid #ffb56b;
+    margin-left: 150px;
+    margin-right: 150px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 #box img{
@@ -26,12 +47,27 @@ body{
 
 /*START NAV*/
 #nav{
-    width: 100%;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 200px;
+    border:none;
+    background:linear-gradient(135deg,#1f005c, #5b0060, #870160, #ac255e, #ca485c, #e16b5c, #f39060, #ffb56b);
+    -webkit-mask:
+            linear-gradient(red 0 0) top/100% calc(100% - 40px) no-repeat,
+            conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/80px 40px repeat-x;
+    mask:
+            linear-gradient(red 0 0) top/100% calc(100% - 40px) no-repeat,
+            conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/80px 40px repeat-x;
 }
+
+#nav h2{
+    padding-left: 20px;
+    padding-bottom: 40px;
+    font-size: 36px;
+}
+
 
 #nav-bar{
     display: flex;
@@ -39,7 +75,12 @@ body{
 }
 
 #nav-right a{
-    padding: 15px;
+    padding: 20px;
+    font-size: 20px;
+}
+#nav-right{
+    padding-bottom: 40px;
+    padding-right: 30px;
 }
 /*END  NAV*/
 
@@ -49,5 +90,11 @@ body{
 button{
     background-color: dodgerblue;
     color: white;
+    height: 40px;
+}
+#button{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }
 
