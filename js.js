@@ -8,6 +8,21 @@ $.get('data/contacts.txt').done(function (data) {
 
     // ON CLICK APPENDS RANDOM PERSON
     $("#showLine").on("click", function () {
+
+        let count = Math.floor(Math.random() * 11);
+        console.log(count)
+        $("#box").html("")
+        $("#box").append(`<div id="person">
+            <img id="img" src="" style="visibility: hidden">
+            <p id="description"></p>
+                <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+        </div>`)
+
+
+
         $("#box").removeClass("toggle1")
         $("#box").removeClass("toggle2")
         $("#box").removeClass("toggle3")
@@ -19,28 +34,7 @@ $.get('data/contacts.txt').done(function (data) {
         $("#box").removeClass("toggle9")
         $("#box").removeClass("toggle10")
         $("#box").removeClass("toggle11")
-        let count = Math.floor(Math.random() * 11);
-        console.log(count)
-        $("#box").html("")
-        $("#box").append(`<div id="person">
-            <p id="description"></p>
-                <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-        </div>`)
 
-        let random = people[Math.floor(Math.random() * (people.length - 1))];
-        console.log(random)
-        let split = random.split("|")
-        console.log(split)
-
-        $("#description").append(`<p id="name">OWNER : </i>${split[0]}</p><br><p id="number">CALL TO ADOPT : ${split[1]}</p>`);
-
-        $.get('https://dog.ceo/api/breeds/image/random').done(function (dogs){
-            let dog = dogs.message;
-            console.log(dogs)
-            $("#person").prepend(`<img src="${dog}">`)
         if (count === 0) {
             $("#box").addClass("toggle1")
         } else if (count === 1) {
@@ -67,6 +61,28 @@ $.get('data/contacts.txt').done(function (data) {
         }
         console.log(count)
         count = 0;
+
+
+
+
+        let random = people[Math.floor(Math.random() * (people.length - 1))];
+        console.log(random)
+        let split = random.split("|")
+        console.log(split)
+
+        $("#description").append(`<p id="name">OWNER : </i>${split[0]}</p><br><p id="number">CALL TO ADOPT : ${split[1]}</p>`);
+
+        $.get('https://dog.ceo/api/breeds/image/random').done(function (dogs){
+
+
+            let dog = dogs.message;
+            console.log(dogs)
+            $("#img").attr("src", dog)
+            $("#img").css("visibility", "visible")
+
+
+
+
         });
     })
 
