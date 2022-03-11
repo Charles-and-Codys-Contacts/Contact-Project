@@ -10,7 +10,7 @@ import java.util.*;
 public class ContactsApplication {
     public static int mainMenu() {
         Scanner sc = new Scanner(System.in);
-        System.out.print("\nWelcome to C & C Contacts Factory\n------------------------------------ \n1. View Contacts\n2. Add a new contact\n3. Search for a contact by name\n4. Delete an existing contact\n5. Save contacts\n6. Exit\n------------------------------------\nPlease select an option: ");
+        System.out.print("\nWelcome to C & C Contacts Factory\n------------------------------------ \n1. View Contacts\n2. Add a new contact\n3. Search for a contact by name\n4. Edit a contact\n5. Delete an existing contact\n6. Save contacts\n7. Exit\n------------------------------------\nPlease select an option: ");
         return sc.nextInt();
     }
 
@@ -37,14 +37,33 @@ public class ContactsApplication {
                 break;
             }
         } while (true);
+        for (Contact contact : contactsList) {
+            if (contact.getFirstName().equals(firstName) && contact.getLastName().equals(lastName)) {
+                System.out.print("This name already exists in your contact list. Continue? [y/N] ");
+                if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                    break;
+                } else {
+                    System.out.println("Cancelling...");
+                    return;
+                }
+            }
+        }
         do {
-            System.out.print("Enter the telephone number: ");
+            System.out.print("Enter telephone number: ");
             phoneNumber = scanner.nextLine();
-            if (phoneNumber.length() != 12) {
-                System.out.println("Phone numbers must have 10 digits. Format: [###-###-####]");
-            } else if (phoneNumber.contains("|")) {
+            if (phoneNumber.contains("|")) {
                 System.out.println("Phone numbers cannot have \"|\"s. Try again.");
             } else {
+                if (phoneNumber.length() == 10) {
+                    String part1 = phoneNumber.substring(0, 3);
+                    String part2 = phoneNumber.substring(3, 6);
+                    String part3 = phoneNumber.substring(6);
+                    phoneNumber = part1 + "-" + part2 + "-" + part3;
+                } else if (phoneNumber.length() == 7) {
+                    String part1 = phoneNumber.substring(0, 3);
+                    String part2 = phoneNumber.substring(3);
+                    phoneNumber = part1 + "-" + part2;
+                }
                 break;
             }
         } while (true);
@@ -74,6 +93,98 @@ public class ContactsApplication {
         }
         for (Contact contact : matchedContacts) {
             System.out.printf("%s %s - %s\n", contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber());
+        }
+    }
+
+    public static void editContact(ArrayList<Contact> contactsList) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter first or last name: ");
+        String userSearch = scanner.nextLine().toLowerCase();
+        ArrayList<Contact> matchedContacts = new ArrayList<>();
+        for (Contact contact : contactsList) {
+            if (contact.getFirstName().toLowerCase().contains(userSearch) || contact.getLastName().toLowerCase().contains(userSearch)) {
+                matchedContacts.add(contact);
+            }
+        }
+        while (true) {
+            System.out.println("0. Cancel");
+            for (int i = 0; i < matchedContacts.size(); i++) {
+                System.out.printf("%d. %s %s - %s\n", i + 1, matchedContacts.get(i).getFirstName(), matchedContacts.get(i).getLastName(), matchedContacts.get(i).getPhoneNumber());
+            }
+            System.out.print("Who would you like to edit? ");
+            try {
+                int userInput = Integer.parseInt(scanner.nextLine());
+                if (userInput == 0) {
+                    return;
+                } else if (userInput <= matchedContacts.size()) {
+                    System.out.printf("Editing %s %s\n", matchedContacts.get(userInput - 1).getFirstName(), matchedContacts.get(userInput - 1).getLastName());
+                    String firstName;
+                    String lastName;
+                    String phoneNumber;
+                    do {
+                        System.out.print("Enter first name: ");
+                        firstName = scanner.nextLine();
+                        if (firstName.contains("|")) {
+                            System.out.println("Names cannot have \"|\"s. Try again.");
+                        } else {
+                            break;
+                        }
+                    } while (true);
+                    do {
+                        System.out.print("Enter last name: ");
+                        lastName = scanner.nextLine();
+                        if (lastName.contains("|")) {
+                            System.out.println("Names cannot have \"|\"s. Try again.");
+                        } else {
+                            break;
+                        }
+                    } while (true);
+                    for (Contact contact : contactsList) {
+                        if (contact.getFirstName().equals(firstName) && contact.getLastName().equals(lastName)) {
+                            System.out.print("This name already exists in your contact list. Continue? [y/N] ");
+                            if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                                break;
+                            } else {
+                                System.out.println("Cancelling...");
+                                return;
+                            }
+                        }
+                    }
+                    do {
+                        System.out.print("Enter telephone number: ");
+                        phoneNumber = scanner.nextLine();
+                        if (phoneNumber.contains("|")) {
+                            System.out.println("Phone numbers cannot have \"|\"s. Try again.");
+                        } else {
+                            if (phoneNumber.length() == 10) {
+                                String part1 = phoneNumber.substring(0, 3);
+                                String part2 = phoneNumber.substring(3, 6);
+                                String part3 = phoneNumber.substring(6);
+                                phoneNumber = part1 + "-" + part2 + "-" + part3;
+                            } else if (phoneNumber.length() == 7) {
+                                String part1 = phoneNumber.substring(0, 3);
+                                String part2 = phoneNumber.substring(3);
+                                phoneNumber = part1 + "-" + part2;
+                            }
+                            break;
+                        }
+                    } while (true);
+                    for (Contact contact : contactsList) {
+                        if (contact.getFirstName().equals(matchedContacts.get(userInput - 1).getFirstName()) && contact.getLastName().equals(matchedContacts.get(userInput - 1).getLastName()) && contact.getPhoneNumber().equals(matchedContacts.get(userInput - 1).getPhoneNumber())) {
+                            System.out.printf("%s %s (%s) updated to %s %s (%s)\n", contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber(), firstName, lastName, phoneNumber);
+                            contact.setFirstName(firstName);
+                            contact.setLastName(lastName);
+                            contact.setPhoneNumber(phoneNumber);
+                            contactsList.sort(new ContactComparator());
+                            return;
+                        }
+                    }
+                } else {
+                    System.out.println("Invalid input.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+            }
         }
     }
 
@@ -133,12 +244,15 @@ public class ContactsApplication {
                     searchContacts(contactsList);
                     break;
                 case 4:
-                    deleteContact(contactsList);
+                    editContact(contactsList);
                     break;
                 case 5:
-                    saveContacts(contactsPath, contactsList);
+                    deleteContact(contactsList);
                     break;
                 case 6:
+                    saveContacts(contactsPath, contactsList);
+                    break;
+                case 7:
                     System.out.print("Save contacts? [y/N] ");
                     if (scanner.nextLine().toLowerCase().startsWith("y")) {
                         saveContacts(contactsPath, contactsList);
