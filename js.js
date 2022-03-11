@@ -35,7 +35,7 @@ $.get('data/contacts.txt').done(function (data) {
         let split = random.split("|")
         console.log(split)
 
-        $("#description").append(`<p id="name"></i>${split[0]}</p><br><p id="number">${split[1]}</p>`);
+        $("#description").append(`<p id="name">OWNER : </i>${split[0]}</p><br><p id="number">CALL TO ADOPT : ${split[1]}</p>`);
 
         $.get('https://dog.ceo/api/breeds/image/random').done(function (dogs){
             let dog = dogs.message;
