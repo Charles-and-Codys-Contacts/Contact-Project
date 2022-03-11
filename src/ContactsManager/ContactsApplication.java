@@ -168,66 +168,71 @@ public class ContactsApplication {
                 if (userInput == 0) {
                     return;
                 } else if (userInput <= matchedContacts.size()) {
-                    System.out.printf("Editing %s %s\n", matchedContacts.get(userInput - 1).getFirstName(), matchedContacts.get(userInput - 1).getLastName());
-                    String firstName;
-                    String lastName;
-                    String phoneNumber;
-                    do {
-                        System.out.print("Enter first name: ");
-                        firstName = scanner.nextLine();
-                        if (invalidName(firstName)) {
-                            System.out.println("Names cannot contain numbers or special characters. Try again.");
-                        } else {
-                            break;
-                        }
-                    } while (true);
-                    do {
-                        System.out.print("Enter last name: ");
-                        lastName = scanner.nextLine();
-                        if (invalidName(lastName)) {
-                            System.out.println("Names cannot contain special characters or numbers. Try again.");
-                        } else {
-                            break;
-                        }
-                    } while (true);
-                    for (Contact contact : contactsList) {
-                        if (contact.getFirstName().equals(firstName) && contact.getLastName().equals(lastName)) {
-                            System.out.print("This name already exists in your contact list. Continue? [y/N] ");
-                            if (scanner.nextLine().toLowerCase().startsWith("y")) {
+                    String firstName = matchedContacts.get(userInput - 1).getFirstName();
+                    String lastName = matchedContacts.get(userInput - 1).getLastName();
+                    String phoneNumber = matchedContacts.get(userInput - 1).getPhoneNumber();
+                    while(true) {
+                        String editComponent;
+                        System.out.printf("Editing %s %s (%s)\n", firstName, lastName, phoneNumber);
+                        System.out.print("0. Save and finish editing\n1. First name\n2. Last name\n3. Phone number\nWhat would you like to change? ");
+                        editComponent = scanner.nextLine();
+                        switch(editComponent) {
+                            case "0":
+                                for (Contact contact : contactsList) {
+                                    if (contact.getFirstName().equals(matchedContacts.get(userInput - 1).getFirstName()) && contact.getLastName().equals(matchedContacts.get(userInput - 1).getLastName()) && contact.getPhoneNumber().equals(matchedContacts.get(userInput - 1).getPhoneNumber())) {
+                                        System.out.printf("%s %s (%s) updated to %s %s (%s)\n", contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber(), firstName, lastName, phoneNumber);
+                                        contact.setFirstName(firstName);
+                                        contact.setLastName(lastName);
+                                        contact.setPhoneNumber(phoneNumber);
+                                        contactsList.sort(new ContactComparator());
+                                        return;
+                                    }
+                                }
+                            case "1":
+                                do {
+                                    System.out.print("Enter first name: ");
+                                    firstName = scanner.nextLine();
+                                    if (invalidName(firstName)) {
+                                        System.out.println("Names cannot contain numbers or special characters. Try again.");
+                                    } else {
+                                        break;
+                                    }
+                                } while (true);
                                 break;
-                            } else {
-                                System.out.println("Cancelling...");
-                                return;
-                            }
-                        }
-                    }
-                    do {
-                        System.out.print("Enter telephone number: ");
-                        phoneNumber = scanner.nextLine();
-                        if (invalidPhoneNumber(phoneNumber)) {
-                            System.out.println("Phone numbers cannot contain letters or special characters. Try again.");
-                        } else {
-                            if (phoneNumber.length() == 10) {
-                                String part1 = phoneNumber.substring(0, 3);
-                                String part2 = phoneNumber.substring(3, 6);
-                                String part3 = phoneNumber.substring(6);
-                                phoneNumber = part1 + "-" + part2 + "-" + part3;
-                            } else if (phoneNumber.length() == 7) {
-                                String part1 = phoneNumber.substring(0, 3);
-                                String part2 = phoneNumber.substring(3);
-                                phoneNumber = part1 + "-" + part2;
-                            }
-                            break;
-                        }
-                    } while (true);
-                    for (Contact contact : contactsList) {
-                        if (contact.getFirstName().equals(matchedContacts.get(userInput - 1).getFirstName()) && contact.getLastName().equals(matchedContacts.get(userInput - 1).getLastName()) && contact.getPhoneNumber().equals(matchedContacts.get(userInput - 1).getPhoneNumber())) {
-                            System.out.printf("%s %s (%s) updated to %s %s (%s)\n", contact.getFirstName(), contact.getLastName(), contact.getPhoneNumber(), firstName, lastName, phoneNumber);
-                            contact.setFirstName(firstName);
-                            contact.setLastName(lastName);
-                            contact.setPhoneNumber(phoneNumber);
-                            contactsList.sort(new ContactComparator());
-                            return;
+                            case "2":
+                                do {
+                                    System.out.print("Enter last name: ");
+                                    lastName = scanner.nextLine();
+                                    if (invalidName(lastName)) {
+                                        System.out.println("Names cannot contain special characters or numbers. Try again.");
+                                    } else {
+                                        break;
+                                    }
+                                } while (true);
+                                break;
+                            case "3":
+                                do {
+                                    System.out.print("Enter telephone number: ");
+                                    phoneNumber = scanner.nextLine();
+                                    if (invalidPhoneNumber(phoneNumber)) {
+                                        System.out.println("Phone numbers cannot contain letters or special characters. Try again.");
+                                    } else {
+                                        if (phoneNumber.length() == 10) {
+                                            String part1 = phoneNumber.substring(0, 3);
+                                            String part2 = phoneNumber.substring(3, 6);
+                                            String part3 = phoneNumber.substring(6);
+                                            phoneNumber = part1 + "-" + part2 + "-" + part3;
+                                        } else if (phoneNumber.length() == 7) {
+                                            String part1 = phoneNumber.substring(0, 3);
+                                            String part2 = phoneNumber.substring(3);
+                                            phoneNumber = part1 + "-" + part2;
+                                        }
+                                        break;
+                                    }
+                                } while (true);
+                                break;
+                            default:
+                                System.out.println("Invalid input.");
                         }
                     }
                 } else {
