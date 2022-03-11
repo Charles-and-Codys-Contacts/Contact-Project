@@ -146,8 +146,8 @@ body{
 }
 
 #box img{
-    width: 250px;
-    height: 250px;
+    width: 350px;
+    height: 350px;
     margin: auto;
 }
 #person{
@@ -165,7 +165,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 200px;
+    margin-bottom: 100px;
     border:none;
     background:linear-gradient(135deg,#1f005c, #5b0060, #870160, #ac255e, #ca485c, #e16b5c, #f39060, #ffb56b);
     -webkit-mask:
