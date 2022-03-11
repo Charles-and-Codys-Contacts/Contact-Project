@@ -1,0 +1,9 @@
+body{
+    background-color: gray;
+    color: black;
+}
+
+#box{
+    height: 500px;
+    width: 100%;
+}
