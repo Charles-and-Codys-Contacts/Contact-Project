@@ -1,9 +1,53 @@
 body{
     background-color: gray;
-    color: black;
+    color: white;
 }
 
+
+/*PERSON BOX*/
 #box{
-    height: 500px;
-    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
+
+#box img{
+    width: 100px;
+}
+#person{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+
+
+/*START NAV*/
+#nav{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 200px;
+}
+
+#nav-bar{
+    display: flex;
+    align-items: center;
+}
+
+#nav-right a{
+    padding: 15px;
+}
+/*END  NAV*/
+
+
+
+/*BUTTON*/
+button{
+    background-color: dodgerblue;
+    color: white;
+}
+
