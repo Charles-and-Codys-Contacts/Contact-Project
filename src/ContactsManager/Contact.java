@@ -1,16 +1,21 @@
 package ContactsManager;
 
 public class Contact {
+
+    //   PRIVATE PROPERTIES
     private String firstName;
     private String lastName;
     private String phoneNumber;
 
+
+    //    CONTACT CONSTRUCTOR
     public Contact(String firstName, String lastName, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
     }
 
+    //    GETTERS AND SETTERS
     public String getFirstName() {
         return this.firstName;
     }

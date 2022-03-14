@@ -7,12 +7,16 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ContactsApplication {
+
+//    SELECTION MENU
     public static String mainMenu() {
         Scanner sc = new Scanner(System.in);
         System.out.print("\nWelcome to C & C Contacts Factory\n------------------------------------ \n1. View Contacts\n2. Add a new contact\n3. Search for a contact by name\n4. Edit a contact\n5. Delete an existing contact\n6. Save contacts\n7. Exit\n------------------------------------\nPlease select an option: ");
         return sc.nextLine();
     }
 
+
+//    CHECK IF NAME ENTERED IS ENTERED AND NOT THE SAME AS ONE ALREADY PRESENT
     public static boolean invalidName(String name) {
         if (name.length() == 0) {
             return true;
@@ -25,6 +29,7 @@ public class ContactsApplication {
         return false;
     }
 
+    //    CHECK IF NUMBER ENTERED IS ENTERED AND NOT THE SAME AS ONE ALREADY PRESENT
     public static boolean invalidPhoneNumber(String phoneNumber) {
         if (phoneNumber.length() == 0) {
             return true;
@@ -40,6 +45,7 @@ public class ContactsApplication {
         return false;
     }
 
+//    ADD CONTACT NAME AND NUMBER WITH CONDITIONALS FOR EACH
     public static void addContact(ArrayList<Contact> contactsList) {
         Scanner scanner = new Scanner(System.in);
         String firstName;
@@ -99,6 +105,8 @@ public class ContactsApplication {
         System.out.println(firstName + " " + lastName + " was successfully added to your contacts list.");
     }
 
+
+//    SHOW ALL CONTACTS
     public static void showContactList(ArrayList<Contact> contactsList) {
         String leftAlignFormat = " %-20s | %-12s |%n";
         System.out.printf(leftAlignFormat, "Name", "Phone Number");
@@ -108,6 +116,8 @@ public class ContactsApplication {
         }
     }
 
+
+//    SEARCH BY FIRST/LAST OR PHONE NUMBER
     public static void searchContacts(ArrayList<Contact> contactsList) {
         Scanner scanner = new Scanner(System.in);
         String userSearch;
@@ -135,6 +145,8 @@ public class ContactsApplication {
         }
     }
 
+
+//    EDIT CONTACT BY FIRST OR LAST NAME
     public static void editContact(ArrayList<Contact> contactsList) {
         Scanner scanner = new Scanner(System.in);
         String userSearch;
@@ -244,6 +256,8 @@ public class ContactsApplication {
         }
     }
 
+
+//    DELETE OPTION BY FIRST OR LAST NAME
     public static void deleteContact(ArrayList<Contact> contactsList) {
         Scanner scanner = new Scanner(System.in);
         String userSearch;
@@ -267,6 +281,8 @@ public class ContactsApplication {
             }
         }
     }
+
+
 
     public static void saveContacts(Path contactsPath, ArrayList<Contact> contactsList) {
         List<String> contactsStringList = new ArrayList<>();

@@ -1,16 +1,21 @@
 $.get('data/contacts.txt').done(function (data) {
 
-
-
+    console.log(typeof data)
+    console.log(data)
+    // ==== SPLIT AT EACH NEW LINE
     let people = [];
     people = data.split("\n");
+    console.log(people)
 
 
-    // ON CLICK APPENDS RANDOM PERSON
+    // ==== "ON CLICK" APPENDS RANDOM PERSON FUNCTION
     $("#showLine").on("click", function () {
 
+        // ==== RANDOM NUMBER TO SELECT BORDER TO DISPLAY
         let count = Math.floor(Math.random() * 11);
         console.log(count)
+
+        // ==== CLEAR PREVIOUS/APPEND NEW CONTENT IN BOX
         $("#box").html("")
         $("#box").append(`<div id="person">
             <img id="img" src="" style="visibility: hidden">
@@ -22,7 +27,7 @@ $.get('data/contacts.txt').done(function (data) {
         </div>`)
 
 
-
+// ==== QUICK FIX TO REMOVE ALL BORDER CLASSES BEFORE TOGGLE SO THEY DONT LAYER ON TOP OF EACH OTHER
         $("#box").removeClass("toggle1")
         $("#box").removeClass("toggle2")
         $("#box").removeClass("toggle3")
@@ -35,6 +40,7 @@ $.get('data/contacts.txt').done(function (data) {
         $("#box").removeClass("toggle10")
         $("#box").removeClass("toggle11")
 
+        // ==== BIG IF ELSE FOR BORDER CHANGES
         if (count === 0) {
             $("#box").addClass("toggle1")
         } else if (count === 1) {
@@ -63,24 +69,26 @@ $.get('data/contacts.txt').done(function (data) {
         count = 0;
 
 
-
-
+// ==== RANDOM NUMBER TO SELECT PERSON TO DISPLAY
         let random = people[Math.floor(Math.random() * (people.length - 1))];
         console.log(random)
+
+        // ==== SPLIT AT "PIPE"
         let split = random.split("|")
         console.log(split)
 
+        // ==== APPEND PERSON NAME/NUMBER
         $("#description").append(`<p id="name">OWNER : </i>${split[0]}</p><br><p id="number">CALL TO ADOPT : ${split[1]}</p>`);
 
-        $.get('https://dog.ceo/api/breeds/image/random').done(function (dogs){
 
+        // ==== API CALL FOR RANDOM DOG IMAGE
+        $.get('https://dog.ceo/api/breeds/image/random').done(function (dogs) {
 
+            // ==== INPUT SRC OF RANDOM TO "IMG"
             let dog = dogs.message;
             console.log(dogs)
             $("#img").attr("src", dog)
             $("#img").css("visibility", "visible")
-
-
 
 
         });
